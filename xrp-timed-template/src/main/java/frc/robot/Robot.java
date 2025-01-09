@@ -5,12 +5,18 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.xrp.XRPMotor;
 
 
 public class Robot extends TimedRobot {
+  private XRPMotor mLeft = new XRPMotor(0);
+  private XRPMotor mRight = new XRPMotor(1);
+  private XboxController controller = new XBoxController(0);
 
-  public Robot() {}
+  public Robot() {
 
+  }
 
   @Override
   public void robotPeriodic() {}
@@ -24,11 +30,18 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when teleop is enabled. */
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    // mLeft.setInverted(true);
+    mRight.setInverted(true);
+  }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    //sets speed based on XBOX controller
+    mLeft.set(-controller.getLeftY());
+    mRight.set(-controller.getRightY()); 
+  }
 
   /** This function is called once when the robot is disabled. */
   @Override
