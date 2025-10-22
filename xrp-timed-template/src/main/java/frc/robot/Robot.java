@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.xrp.XRPOnBoardIO;
 import edu.wpi.first.wpilibj.xrp.XRPRangefinder;
 import edu.wpi.first.wpilibj.xrp.XRPReflectanceSensor;
 import edu.wpi.first.wpilibj.xrp.XRPServo;
+import frc.robot.VexV5Controller;
 
 
 public class Robot extends TimedRobot {
