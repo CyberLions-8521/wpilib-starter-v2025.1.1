@@ -7,43 +7,75 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 
 /** Add your docs here. */
-public class VexV5Controller {
-
-    private GenericHID m_controller;
+public class VexV5Controller extends GenericHID {
 
     public VexV5Controller(int port) {
-        m_controller = new GenericHID(port);
+        super(port);
     }
 
     public double getLeftX() {
-        return m_controller.getRawAxis(0);
+        return super.getRawAxis(0);
     }
     
     public double getLeftY() {
-        return m_controller.getRawAxis(1);
+        return super.getRawAxis(1);
     }
       
     public double getRightX() {
-        return m_controller.getRawAxis(2);
+        return super.getRawAxis(2);
     }
     
     public double getRightY() {
-        return m_controller.getRawAxis(3);
+        return super.getRawAxis(3);
     }
     
     public boolean getButtonA() {
-        return m_controller.getRawButton(2);
+        return super.getRawButton(2);
     }
     
     public boolean getButtonB() {
-        return m_controller.getRawButton(1);
+        return super.getRawButton(1);
     }
     
     public boolean getButtonX() {
-        return m_controller.getRawButton(4);
+        return super.getRawButton(4);
     }
     
     public boolean getButtonY() {
-        return m_controller.getRawButton(3);
+        return super.getRawButton(3);
     }
+
+    public boolean getUp() {
+        return super.getRawButton(13);
+    }
+
+    public boolean getDown() {
+        return super.getRawButton(14);
+    }
+
+    public boolean getLeft() {
+        return super.getRawButton(15);
+    }
+
+    public boolean getRight() {
+        return super.getRawButton(16);
+    }
+
+    public boolean getL1() {
+        return super.getRawButton(5);
+    }
+
+    public boolean getL2() {
+        return super.getRawButton(7);
+    }
+
+    public boolean getR1() {
+        return super.getRawButton(6);
+    }
+
+    public boolean getR2() {
+        return super.getRawButton(8);
+    }
+
+
 }
