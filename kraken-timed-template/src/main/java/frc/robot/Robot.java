@@ -11,9 +11,9 @@ import com.ctre.phoenix6.hardware.TalonFX;
 public class Robot extends TimedRobot {
 
   public Robot() {
-   
-  }
-
+    private TalonFX motor;
+    
+  
   @Override
   public void teleopInit() {
 
@@ -21,6 +21,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    
+    motor.set(0.5);
   }
+}
 }
