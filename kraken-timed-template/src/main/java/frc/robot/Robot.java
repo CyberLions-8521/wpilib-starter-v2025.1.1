@@ -9,7 +9,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 
 public class Robot extends TimedRobot {
-
+private TalonFX Skibidi;
   public Robot() {
    
   }
@@ -21,6 +21,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    
+    Skibidi.set(0.67); 
   }
 }
