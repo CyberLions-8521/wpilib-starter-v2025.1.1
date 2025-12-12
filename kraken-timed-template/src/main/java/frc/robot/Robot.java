@@ -7,7 +7,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-
+Person Sam = new Person()
 public class Robot extends TimedRobot {
   public Robot() {
    
