@@ -9,7 +9,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 
 public class Robot extends TimedRobot {
-
+TalonFX motor3 = new TalonFX();
   public Robot() {
    
   }
