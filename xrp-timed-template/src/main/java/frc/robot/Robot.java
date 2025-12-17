@@ -19,6 +19,7 @@ import frc.robot.VexV5Controller;
 
 
 public class Robot extends TimedRobot {
+  // testing
   XRPMotor motorL = new XRPMotor(0);
   XRPMotor motorR = new XRPMotor(1);
   public Robot() {}
