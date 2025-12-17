@@ -19,7 +19,8 @@ import frc.robot.VexV5Controller;
 
 
 public class Robot extends TimedRobot {
-
+  XRPMotor motorL = new XRPMotor(0);
+  XRPMotor motorR = new XRPMotor(1);
   public Robot() {}
 
   @Override
@@ -32,6 +33,8 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic()
   {
     // type code in here - runs forever
+    motorL.set(0.5);
+    motorR.set(0.5);
   }
 
 
