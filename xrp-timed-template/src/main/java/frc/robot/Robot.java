@@ -22,56 +22,137 @@ import frc.robot.VexV5Controller;
 public class Robot extends TimedRobot {
   private XRPMotor lmotor = new XRPMotor(0);
   private XRPMotor rmotor = new XRPMotor(1);
-  private double speed = 0.5;
+
   private Encoder leftEncoder = new Encoder(4,5);
   private Encoder rightEncoder = new Encoder(6,7);
+
   private double wheelDiameter = 2.3622;
   private double trackWidth = 6.1;
   private double pulsesPerRev = 585;
   private double circumference = Math.PI * wheelDiameter;
   private double distancePerPulse = circumference / pulsesPerRev;
 
+  private double avgDistance;
+  private double speed = 0.5;
+
+  private enum Autostate {
+    FORWARD1, TURN1, FORWARD2, TURN2, FORWARD3, TURN3, FORWARD4, TURN4, DONE
+  }
+
+  private Autostate currentState = Autostate.FORWARD1;
+
   public Robot() {
     rmotor.setInverted(true);
   }
-  public void moveFoward(double d) {
-    if ( ( (leftEncoder.getDistance() + rightEncoder.getDistance() ) / 2) > d) {
-      lmotor.stopMotor();
-      rmotor.stopMotor();
+
+  public void restartDistance() {
+    leftEncoder.reset();
+    rightEncoder.reset();
   }
+  public void stopAllMotor() {
+    rmotor.stopMotor();
+    lmotor.stopMotor();
   }
+
+  public boolean moveForward(double d) {
+    avgDistance = ((leftEncoder.getDistance() + rightEncoder.getDistance()) / 2);
+
+    if ( avgDistance >= d) {
+      stopAllMotor();
+      return true;
+    } else {
+    lmotor.set(speed);
+    rmotor.set(speed);
+      return false;
+    }
+  }
+
+  public boolean rotateRight(double d) {
+    avgDistance = ((Math.abs(leftEncoder.getDistance()) + Math.abs(rightEncoder.getDistance())) / 2);
+    if ( avgDistance >= d) {
+      stopAllMotor();
+      return true;
+    } else {
+      lmotor.set(speed);
+      rmotor.set(-speed);
+      return false;
+    }
+  }
+
+  public boolean rotateLeft(double d) {
+      avgDistance = ((Math.abs(leftEncoder.getDistance()) + Math.abs(rightEncoder.getDistance())) / 2 );
+    if ( avgDistance >= d) {
+      stopAllMotor();
+      return true;
+    } else {
+      rmotor.set(speed);
+      lmotor.set(-speed);
+      return false;
+    }
+  }
+
   @Override
   public void teleopInit()
   {
-    // type code in here - runs once\
     leftEncoder.setDistancePerPulse(distancePerPulse);
     rightEncoder.setDistancePerPulse(distancePerPulse);
 
-    leftEncoder.reset();
-    rightEncoder.reset();
+    restartDistance();
   }
 
 
   @Override
   public void teleopPeriodic()
   {
-    lmotor.set(speed);
-    rmotor.set(speed);
-    moveFoward(10);
-    lmotor.set(speed);
-    if (leftEncoder.getDistance() > 20) {
-      lmotor.stopMotor();
+    switch (currentState) {
+      case FORWARD1: 
+              if (moveForward(10)) {
+                restartDistance();
+                currentState = Autostate.TURN1;
+              }
+              break;
+      case TURN1: 
+              if (rotateRight(10)) {
+                restartDistance();
+                currentState = Autostate.FORWARD2;
+              }
+              break;
+      case FORWARD2:
+              if (moveForward(10)) {
+                restartDistance();
+                currentState = Autostate.TURN2;
+              }
+              break;
+      case TURN2: 
+              if (rotateRight(10)) {
+                restartDistance();
+                currentState = Autostate.FORWARD3;
+              } 
+              break;
+      case FORWARD3: 
+              if (moveForward(10)) {
+                restartDistance();
+                currentState = Autostate.TURN3;
+              }
+              break;
+      case TURN3:
+            if (rotateRight(10)) {
+              restartDistance();
+              currentState = Autostate.FORWARD4;
+            }
+            break;
+      case FORWARD4:
+            if (moveForward(10)) {
+              restartDistance();
+              currentState = Autostate.DONE;
+            }
+            break;
+      case DONE:
+            stopAllMotor();
+            break;
     }
 
-
   }
-
-
-
-
-
-
-
 
   /* // Optional robot methods - uncomment to use
   @Override
