@@ -7,8 +7,9 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-
 public class Robot extends TimedRobot {
+  TalonFX motor I = new TalonFX(); 
+  person Kat = new person(0); 
 
   public Robot() {
    
@@ -21,6 +22,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+    
     
   }
 }
