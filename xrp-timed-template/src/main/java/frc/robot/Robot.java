@@ -23,17 +23,20 @@ import frc.robot.VexV5Controller;
 
 
 public class Robot extends TimedRobot {
-private XRPMotor LeftMotor = new XRPMotor(0); 
-private XRPMotor RightMotor = new XRPMotor(1); 
-private Encoder LeftEncoder = new Encoder(6,7);
-private Encoder RightEncoder = new Encoder(4,5);
+  private XRPMotor LeftMotor = new XRPMotor(0); 
+  private XRPMotor RightMotor = new XRPMotor(1); 
 
-double WheelDiameter = 2.3622; 
-double TrackWith = 6.1;
-double PulsePerRev = 585;
+  private Encoder LeftEncoder = new Encoder(6,7);
+  private Encoder RightEncoder = new Encoder(4,5);
 
-double circumference = Math.PI * WheelDiameter;
-double DistPerPulse = circumference/PulsePerRev;
+  double WheelDiameter = 2.3622; 
+  double TrackWith = 6.1;
+  double PulsePerRev = 585;
+
+  double speed = 0.5; 
+
+  double circumference = Math.PI * WheelDiameter;
+  double DistPerPulse = circumference/PulsePerRev;
 
 
   public Robot() {
@@ -41,6 +44,17 @@ double DistPerPulse = circumference/PulsePerRev;
     RightEncoder.setDistancePerPulse(DistPerPulse);
 
     RightMotor.setInverted(true);
+  }
+
+  // driving a certain distance
+  public void driveDist(double d) {
+    if (getAverageDist() <= d) {
+      moveForward();
+    }
+    else {
+      LeftMotor.set(0);
+      RightMotor.set(0);
+    }
   }
 
   @Override
@@ -55,54 +69,40 @@ double DistPerPulse = circumference/PulsePerRev;
   @Override
   public void teleopPeriodic()
   {
-    // LeftEncoder.getDistance();
-    // RightEncoder.getDistance();
-
-    if (getAverageDist() <= 10) {
-      moveForward();
-    }
-    else {
-      LeftMotor.set(0);
-      RightMotor.set(0);
-    }
-
-    // LeftMotor.set(0.5);
-    // RightMotor.set(-0.5); 
-
-
-    // if ((LeftEncoder.getDistance() + RightEncoder.getDistance()) / 2 > 10) {
-    //   LeftMotor.set(0.5);
-    //   RightMotor.set(0);
-    // }
-    // else {
-    //   LeftMotor.set(0);
-    //   RightMotor.set(0);
-    //   LeftEncoder.reset();
-    //   RightEncoder.reset(); 
-    // }
-
-    // if ((LeftEncoder.getDistance() + RightEncoder.getDistance()) / 2 <= 10) {
-    //   LeftMotor.set(0.5);
-    //   RightMotor.set(0.5);
-    // }
-    // else {
-    //   LeftMotor.set(0);
-    //   RightMotor.set(0);
-    // }
-
-
-    // type code in here - runs forever
+    driveDist(20); 
+    resetEncoders();
+    turn(20);
   }
 
+  // turn d distance
+  public void turn(double d) {
+    if (getAverageDist() <= 10) {
+      LeftMotor.set(0.5);
+      RightMotor.set(-0.5);
+    }
+    else {
+      stopMoving();
+    }
+    }
+
+  // motors start moving
   public void moveForward() {
     LeftMotor.set(0.5);
     RightMotor.set(0.5);
   }
 
+  // motors stop moving
+  public void stopMoving() {
+    LeftMotor.set(0);
+    RightMotor.set(0);
+  }
+
+  // get the average distance/total distance 
   public double getAverageDist() {
     return (LeftEncoder.getDistance() + RightEncoder.getDistance()) / 2;
   }
 
+  // reset the Encoders
   public void resetEncoders() {
     LeftEncoder.reset();
     RightEncoder.reset(); 
