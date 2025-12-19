@@ -25,6 +25,8 @@ public class Robot extends TimedRobot {
 
   private Encoder leftEncoder = new Encoder(4,5);
   private Encoder rightEncoder = new Encoder(6,7);
+  
+  private XRPGyro Gyro = new XRPGyro();
 
   private double wheelDiameter = 2.3622;
   private double trackWidth = 6.1;
@@ -33,6 +35,7 @@ public class Robot extends TimedRobot {
   private double distancePerPulse = circumference / pulsesPerRev;
 
   private double avgDistance;
+  private double GyroAngleZ;
   private double speed = 0.5;
 
   private enum Autostate {
@@ -53,6 +56,9 @@ public class Robot extends TimedRobot {
     rmotor.stopMotor();
     lmotor.stopMotor();
   }
+  public void restartGyroDistance() {
+    Gyro.reset();
+  }
 
   public boolean moveForward(double d) { // Forward command is based on inches I believe
     avgDistance = ((leftEncoder.getDistance() + rightEncoder.getDistance()) / 2);
@@ -67,19 +73,19 @@ public class Robot extends TimedRobot {
     }
   }
 
-  public boolean rotateRight(double d) { // command's rotation ratio is 10 inches
-    avgDistance = ((Math.abs(leftEncoder.getDistance()) + Math.abs(rightEncoder.getDistance())) / 2);
-    if ( avgDistance >= d) {
-      stopAllMotor();
-      return true;
-    } else {
-      lmotor.set(speed);
-      rmotor.set(-speed);
-      return false;
-    }
+  public boolean rotateRight(double d) { // command's rotation ratio is 5 inches (2:1 ratio )
+    avgDistance = ((Math.abs(leftEncoder.getDistance()) + Math.abs(rightEncoder.getDistance())) / 2 );
+  if ( avgDistance >= d) {
+    stopAllMotor();
+    return true;
+  } else {
+    rmotor.set(-speed);
+    lmotor.set(speed);
+    return false;
+  }
   }
 
-  public boolean rotateLeft(double d) { // command's rotation ratio is 10 inches
+  public boolean rotateLeft(double d) { // command's rotation ratio is 5 inches
       avgDistance = ((Math.abs(leftEncoder.getDistance()) + Math.abs(rightEncoder.getDistance())) / 2 );
     if ( avgDistance >= d) {
       stopAllMotor();
@@ -104,81 +110,64 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic()
   {
-    switch (currentState) { // in theory makes a square
-      case FORWARD1: 
+      switch (currentState) { // in theory makes a square
+        case FORWARD1:
+                if (moveForward(10)) {
+                  restartDistance();
+                  currentState = Autostate.TURN1;
+                }
+                break;
+        case TURN1:
+                if (rotateRight(4)) {
+                  restartDistance();
+                  currentState = Autostate.FORWARD2;
+                }
+                break;
+        case FORWARD2:
+                if (moveForward(10)) {
+                  restartDistance();
+                  currentState = Autostate.TURN2;
+                }
+                break;
+        case TURN2:
+                if (rotateRight(4)) {
+                  restartDistance();
+                  currentState = Autostate.FORWARD3;
+                }
+                break;
+        case FORWARD3:
+                if (moveForward(10)) {
+                  restartDistance();
+                  currentState = Autostate.TURN3;
+                }
+                break;
+        case TURN3:
+              if (rotateRight(4)) {
+                restartDistance();
+                currentState = Autostate.FORWARD4;
+              }
+              break;
+        case FORWARD4:
               if (moveForward(10)) {
                 restartDistance();
-                currentState = Autostate.TURN1;
+                currentState = Autostate.TURN4;
               }
               break;
-      case TURN1: 
-              if (rotateRight(10)) {
+        case TURN4:
+              if (rotateRight(4)) {
                 restartDistance();
-                currentState = Autostate.FORWARD2;
+                currentState = Autostate.FORWARD5;
               }
               break;
-      case FORWARD2:
+        case FORWARD5:
               if (moveForward(10)) {
                 restartDistance();
-                currentState = Autostate.TURN2;
+                currentState = Autostate.DONE;
               }
+        case DONE:
+              stopAllMotor();
               break;
-      case TURN2: 
-              if (rotateRight(10)) {
-                restartDistance();
-                currentState = Autostate.FORWARD3;
-              } 
-              break;
-      case FORWARD3: 
-              if (moveForward(10)) {
-                restartDistance();
-                currentState = Autostate.TURN3;
-              }
-              break;
-      case TURN3:
-            if (rotateRight(10)) {
-              restartDistance();
-              currentState = Autostate.FORWARD4;
-            }
-            break;
-      case FORWARD4:
-            if (moveForward(10)) {
-              restartDistance();
-              currentState = Autostate.TURN4;
-            }
-            break;
-      case TURN4:
-            if (rotateRight(10)) {
-              restartDistance();
-              currentState = Autostate.FORWARD5;
-            }
-            break;
-      case FORWARD5: 
-            if (moveForward(10)) {
-              restartDistance();
-              currentState = Autostate.DONE;
-            }
-      case DONE:
-            stopAllMotor();
-            break;
+      }
+  
     }
-
-  }
-
-  /* // Optional robot methods - uncomment to use
-  @Override
-  public void robotPeriodic() {}
-  @Override
-  public void autonomousInit() {}
-  @Override
-  public void autonomousPeriodic() {}
-  @Override
-  public void disabledInit() {}
-  @Override
-  public void disabledPeriodic() {}
-  @Override
-  public void testInit() {}
-  @Override
-  public void testPeriodic() {}
-  */
 }
