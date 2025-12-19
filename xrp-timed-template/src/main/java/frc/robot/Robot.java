@@ -6,6 +6,9 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 
+import edu.wpi.first.wpilibj.Encoder;
+
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller;
@@ -19,18 +22,47 @@ import frc.robot.VexV5Controller;
 
 
 public class Robot extends TimedRobot {
+  private XRPMotor LeftMotor = new XRPMotor(0);
+  private XRPMotor RightMotor = new XRPMotor(1);
+  private Encoder Leftencoder = new Encoder(6,7);
+  private Encoder Rightencoder = new Encoder(4,5);
 
-  public Robot() {}
+  double wheeldiameter = 2.3622;
+  double trackwidth = 6.1;
+  double pulsePerRev = 585;
+
+  double circumference = Math.PI * wheeldiameter;
+  double distPerPulse = circumference/pulsePerRev;
+
+
+  public Robot() {
+    RightMotor.setInverted(true);
+    Leftencoder.setDistancePerPulse(distPerPulse);
+    Rightencoder.setDistancePerPulse(distPerPulse);
+  }
 
   @Override
   public void teleopInit()
   {
+   Leftencoder.reset();
+   Rightencoder.reset();
     // type code in here - runs once
   }
 
+  public void drivedistance(double drivedistance) {
+    if ((Leftencoder.getDistance() + Rightencoder.getDistance()) / 2 <= drivedistance) {
+      LeftMotor.set(0.5);
+      RightMotor.set(0.5);
+    }else {
+      LeftMotor.set(0);
+      RightMotor.set(0);
+    }
+  }
+
   @Override
-  public void teleopPeriodic()
-  {
+  public void teleopPeriodic() {
+  drivedistance(10);
+
     // type code in here - runs forever
   }
 

@@ -9,6 +9,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 
 public class Robot extends TimedRobot {
+  TalonFX motor 1 = new TalonFX(motor1)
+ \\ Class name = 
 
   public Robot() {
    
